@@ -53,7 +53,7 @@
                         <br>
                         <form ng-repeat="attr in attributes | filter: currentCategory.name">
                             {{attr.title}}:
-                            <input type="text">
+                            <input type="text" ng-required= attr.required >
                             <br>
                             <br>
                         </form>
