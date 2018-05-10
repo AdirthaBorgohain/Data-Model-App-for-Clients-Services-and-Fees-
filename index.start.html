@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html ng-app="dbApp">
+
+<head>
+    <title>Service-Client Model</title>
+</head>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/animations.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css">
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0rc1/angular-route.min.js"></script>
+
+
+<body ng-controller="MainCtrl">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul class="nav nav-sidebar">
+                    <li ng-repeat="category in categories">
+                        <a href="#" ng-click="setCurrentCategory(category)">{{category.name}}</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                <h1>{{currentCategory.name}}</h1>
+                <!-- <div ng-repeat="attr in attributes | filter: currentCategory.name">
+                    <button type="button" class="close">&times;</button>
+                    <button ng-click="startEditing();" type="button" class="btn btn-link">
+                            <i class="fas fa-edit"></i>
+                    </button>
+                    <a href="#" target="_blank">{{attr.title}}</a>
+                    {{attr.title}}: <input type="text"> -->
+                <!-- </div> -->
+                <hr/>
+
+                <!-- CREATING -->
+                <div ng-if="shouldShowCreating()">
+                    <button type="button" class="btn btn-link" ng-click="startCreating()" ng-if="!isCreating">
+                        <i class="fas fa-plus-square"></i>
+                        Create New {{currentCategory.name}}
+                    </button>
+                    <div ng-if="isCreating">
+                        <br>
+                        <h3>
+                            <u>Create {{currentCategory.name}}</u>
+                        </h3>
+                        <br>
+                        <form ng-repeat="attr in attributes | filter: currentCategory.name">
+                            {{attr.title}}:
+                            <input type="text">
+                            <br>
+                            <br>
+                        </form>
+                        <button type="submit" class="btn btn-default btn-lg pull-right">Submit</button><span style="margin: 2.5%"></span>
+                        <button type="button" class="btn btn-default btn-lg pull-right" ng-click="cancelCreating()">Cancel</button>
+                    </div>
+                </div>
+                <!-- EDITING -->
+                <div ng-if="shouldShowEditing()">
+                    Editing an Attribute!
+                    <button type="button" class="btn btn-default btn-lg pull-right" ng-click="cancelEditing()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="app/dp-app.start.js"></script>
+</body>
+
+</html>

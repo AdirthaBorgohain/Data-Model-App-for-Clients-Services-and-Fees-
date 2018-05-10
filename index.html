@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title></title>
+</head>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0rc1/angular-route.min.js"></script>
+
+<script src="app.js"></script>
+<link rel="stylesheet" type="text/css" href="style.css">
+
+<body ng-app="MyApp">
+  <form>
+    service_code:
+    <input type="text" ng-model="Services.service_code"> parent_service_code:
+    <input type="text" ng-model="Services.parent_service_code"> service_name:
+    <input type="text" ng-model="Services.service_name">
+  </form>
+  <br> service_code:
+  <input type="text" ng-model="Services.service_code" value="{{Services.service_code}}">
+
+  <div ng-controller="ServiceController">
+    service_code:
+    <span ng-bind="service.service_code"></span>
+  </div>
+
+
+</body>
+
+</html>
