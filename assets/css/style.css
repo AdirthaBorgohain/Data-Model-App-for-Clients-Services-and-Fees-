@@ -6,6 +6,11 @@ body {
     color: #4F534E;
 }
 
+table, th, td {
+    border: 1px solid black;
+    text-align: center;
+}
+
 a {
     color: #373A36;
     font-size: 24px;
@@ -14,6 +19,10 @@ a {
 
 a:hover {
     color: #5bc0de;
+}
+
+i{
+    font-size: 15px;
 }
 
 .btn, .btn:focus {

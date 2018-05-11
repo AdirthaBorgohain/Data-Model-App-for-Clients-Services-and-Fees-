@@ -27,45 +27,180 @@
                     </li>
                 </ul>
             </div>
-            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div style="margin: 5%;" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
                 <h1>{{currentCategory.name}}</h1>
-                <!-- <div ng-repeat="attr in attributes | filter: currentCategory.name">
-                    <button type="button" class="close">&times;</button>
-                    <button ng-click="startEditing();" type="button" class="btn btn-link">
-                            <i class="fas fa-edit"></i>
-                    </button>
-                    <a href="#" target="_blank">{{attr.title}}</a>
-                    {{attr.title}}: <input type="text"> -->
-                <!-- </div> -->
                 <hr/>
 
                 <!-- CREATING -->
-                <div ng-if="shouldShowCreating()">
-                    <button type="button" class="btn btn-link" ng-click="startCreating()" ng-if="!isCreating">
-                        <i class="fas fa-plus-square"></i>
-                        Create New {{currentCategory.name}}
-                    </button>
-                    <div ng-if="isCreating">
-                        <br>
-                        <h3>
-                            <u>Create {{currentCategory.name}}</u>
-                        </h3>
-                        <br>
-                        <form ng-repeat="attr in attributes | filter: currentCategory.name">
-                            {{attr.title}}:
-                            <input type="text" ng-required= attr.required >
+                <div ng-if="currentCategory.name === 'Services'">
+                    <div ng-if="shouldShowCreating()">
+                        <button type="button" class="btn btn-link" ng-click="startCreating()" ng-if="!isCreating">
+                            <i class="fas fa-plus-square"></i>
+                            Create New {{currentCategory.name}}
+                        </button>
+                        <div ng-if="isCreating">
                             <br>
+                            <h3>
+                                <u>Create {{currentCategory.name}}</u>
+                            </h3>
                             <br>
+                            <form ng-submit="createServices()">
+                                <label>service_code:</label>
+                                <input required type="text" ng-model="data1.service_code">
+                                <br>
+                                <label>parent_service_code:</label>
+                                <input type="text" ng-model="data1.parent_service_code">
+                                <br>
+                                <label>service_name:</label>
+                                <input type="text" ng-model="data1.service_name">
+                                <br>
+                                <button type="submit" class="btn btn-info btn-lg">Submit</button>
+                                <button type="button" class="btn btn-default btn-lg pull-right" ng-click="cancelCreating()">Cancel</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- DISPLAYING -->
+                    <table style="margin: 3%;">
+                        <tr>
+                            <th>service_code</th>
+                            <th>parent_service_code</th>
+                            <th>service_name</th>
+                        </tr>
+                        <tr ng-repeat="x in Services track by $index">
+                            <td>
+                                <button type="button" class="btn btn-link" ng-click="setEditedAttribute(x.service_code);startEditing();">
+                                    <i class="far fa-edit"></i>
+                                </button>{{x.service_code}}
+                                <!-- <button type="button" class="btn btn-link" ng-click="setEditedBookmark(bookmark);startEditing();">
+                                    <i class="fas fa-trash"></i>
+                                </button> -->
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-link" ng-click="setEditedBookmark(bookmark);startEditing();">
+                                    <i class="far fa-edit"></i>
+                                </button>{{x.parent_service_code}}
+                                <!-- <button type="button" class="btn btn-link" ng-click="setEditedBookmark(bookmark);startEditing();">
+                                    <i class="fas fa-trash"></i>
+                                </button> -->
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-link" ng-click="setEditedBookmark(bookmark);startEditing();">
+                                    <i class="far fa-edit"></i>
+                                </button>{{x.service_name}}
+                                <!-- <button type="button" class="btn btn-link" ng-click="setEditedBookmark(bookmark);startEditing();">
+                                    <i class="fas fa-trash"></i>
+                                </button> -->
+                                <td>
+                        </tr>
+                    </table>
+
+                    <!-- EDITING -->
+                    <div ng-show="shouldShowEditing()">
+                        <h4>Editing service_code</h4>
+                        <form ng-submit="updateAttribute()">
+                            EDIT: <input type="text" ng-model="data.editedAttribute">   
                         </form>
-                        <button type="submit" class="btn btn-default btn-lg pull-right">Submit</button><span style="margin: 2.5%"></span>
-                        <button type="button" class="btn btn-default btn-lg pull-right" ng-click="cancelCreating()">Cancel</button>
+                            <button type="submit" class="btn btn-info btn-lg">Submit</button>
+                        <button type="button" class="btn btn-default btn-lg pull-right" ng-click="cancelEditing()">Cancel</button>
                     </div>
                 </div>
-                <!-- EDITING -->
-                <div ng-if="shouldShowEditing()">
-                    Editing an Attribute!
-                    <button type="button" class="btn btn-default btn-lg pull-right" ng-click="cancelEditing()">Cancel</button>
+
+                <div ng-if="currentCategory.name === 'Projects'">
+                    <div ng-if="shouldShowCreating()">
+                        <button type="button" class="btn btn-link" ng-click="startCreating()" ng-if="!isCreating">
+                            <i class="fas fa-plus-square"></i>
+                            Create New {{currentCategory.name}}
+                        </button>
+                        <div ng-if="isCreating">
+                            <br>
+                            <h3>
+                                <u>Create {{currentCategory.name}}</u>
+                            </h3>
+                            <br>
+                            <form ng-submit="createProjects()">
+                                <label>project_id:</label>
+                                <input type="text" ng-model="data2.project_id">
+                                <br>
+                                <label>client_id:</label>
+                                <input type="text" ng-model="data2.client_id">
+                                <br>
+                                <label>project_name: </label>
+                                <input type="text" ng-model="data2.project_name">
+                                <br>
+                                <label>project_start_date: </label>
+                                <input type="text" ng-model="data2.project_start_date">
+                                <br>
+                                <label>project_end_date</label>
+                                <input type="text" ng-model="data2.project_end_date">
+                                <br>
+                                <label>project_description</label>
+                                <input type="text" ng-model="data2.project_description">
+                                <br>
+                                <label>other_project_details</label>
+                                <input type="text" ng-model="data2.other_project_details">
+                                <button type="submit" class="btn btn-info btn-lg">Submit</button>
+                                <button type="button" class="btn btn-default btn-lg pull-right" ng-click="cancelCreating()">Cancel</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- DISPLAYING -->
+                    <table style="margin: 3%;">
+                        <tr>
+                            <th>project_id</th>
+                            <th>client_id</th>
+                            <th>project_name</th>
+                            <th>project_start_date</th>
+                            <th>project_end_date</th>
+                            <th>project_description</th>
+                            <th>other_project_details</th>
+                        </tr>
+                        <tr ng-repeat="x in Projects track by $index">
+                            <td>
+                                <button type="button" class="btn btn-link" ng-click="setEditedBookmark(bookmark);startEditing();">
+                                    <i class="far fa-edit"></i>
+                                </button> {{x.project_id}}</td>
+                            <td>
+                                <button type="button" class="btn btn-link" ng-click="setEditedBookmark(bookmark);startEditing();">
+                                    <i class="far fa-edit"></i>
+                                </button>{{x.client_id}}</td>
+                            <td>
+                                <button type="button" class="btn btn-link" ng-click="setEditedBookmark(bookmark);startEditing();">
+                                    <i class="far fa-edit"></i>
+                                </button>{{x.project_name}}</td>
+                            <td>
+                                <button type="button" class="btn btn-link" ng-click="setEditedBookmark(bookmark);startEditing();">
+                                    <i class="far fa-edit"></i>
+                                </button>{{x.project_start_date}}</td>
+                            <td>
+                                <button type="button" class="btn btn-link" ng-click="setEditedBookmark(bookmark);startEditing();">
+                                    <i class="far fa-edit"></i>
+                                </button>{{x.project_end_date}}</td>
+                            <td>
+                                <button type="button" class="btn btn-link" ng-click="setEditedBookmark(bookmark);startEditing();">
+                                    <i class="far fa-edit"></i>
+                                </button>{{x.project_description}}</td>
+                            <td>
+                                <button type="button" class="btn btn-link" ng-click="setEditedBookmark(bookmark);startEditing();">
+                                    <i class="far fa-edit"></i>
+                                </button>{{x.other_project_details}}</td>
+                        </tr>
+                    </table>
                 </div>
+
+
+
+
+
+
+
+
+
+
+                <!-- EDITING
+                <div ng-show="shouldShowEditing()">
+                    <h4>Editing {{editedBookmark.title}}</h4>
+                    <button type="button" class="btn btn-default btn-lg pull-right" ng-click="cancelEditing()">Cancel</button>
+                </div> -->
             </div>
         </div>
     </div>
