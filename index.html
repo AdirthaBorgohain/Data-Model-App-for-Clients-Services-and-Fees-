@@ -1,4 +1,5 @@
 <html>
+<meta charset="utf-8" />
 
 <head>
   <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -110,10 +111,12 @@
                       <input name="project_name{{$index}}" ng-model="project.project_name" ng-disabled="!enabledEdit[{{$index}}]" />
                     </td>
                     <td>
-                      <input type="date" name="project_start_date{{$index}}" ng-model="project.project_start_date" ng-disabled="!enabledEdit[{{$index}}]" />
+                      <input type="date" name="project_start_date{{$index}}" ng-model="project.project_start_date" ng-disabled="!enabledEdit[{{$index}}]"
+                      />
                     </td>
                     <td>
-                      <input type="date" name="project_end_date{{$index}}" ng-model="project.project_end_date" ng-disabled="!enabledEdit[{{$index}}]" />
+                      <input type="date" name="project_end_date{{$index}}" ng-model="project.project_end_date" ng-disabled="!enabledEdit[{{$index}}]"
+                      />
                     </td>
                     <td>
                       <input name="project_description{{$index}}" ng-model="project.project_description" ng-disabled="!enabledEdit[{{$index}}]"
@@ -181,7 +184,8 @@
                       <input required name="client_name{{$index}}" ng-model="client.client_name" ng-disabled="!enabledEdit[{{$index}}]" />
                     </td>
                     <td>
-                      <input type="date" name="client_from_date{{$index}}" ng-model="client.client_from_date" ng-disabled="!enabledEdit[{{$index}}]" />
+                      <input type="date" name="client_from_date{{$index}}" ng-model="client.client_from_date" ng-disabled="!enabledEdit[{{$index}}]"
+                      />
                     </td>
                     <td>
                       <input name="kpi_avg_billable_rate{{$index}}" ng-model="client.kpi_avg_billable_rate" ng-disabled="!enabledEdit[{{$index}}]"
@@ -309,5 +313,9 @@
 <script src="js/bootstrap.min.js"></script>
 <script src="js/angular.min.js"></script>
 <script type="text/javascript" src="js/app.js"></script>
+<script type="text/javascript" src="models/services-model.js"></script>
+<script type="text/javascript" src="models/projects-model.js"></script>
+<script type="text/javascript" src="models/clients-model.js"></script>
+<script type="text/javascript" src="models/staffs-model.js"></script>
 
 </html>
