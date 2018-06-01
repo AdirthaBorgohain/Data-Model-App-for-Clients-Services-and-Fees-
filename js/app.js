@@ -391,6 +391,8 @@ app.controller("RefCurrencies", ['$scope', '$rootScope', 'RefCurrenciesModel', f
 
 	$rootScope.$on("CallAddRC", function (event, msg) {
 		$scope.addRefCurrencies(msg);
+		$scope.subEnable = false;
+		$scope.enabledEdit[currIndex] = false;
 	});
 
 	$rootScope.$on("CallDelRC", function (event, index) {
