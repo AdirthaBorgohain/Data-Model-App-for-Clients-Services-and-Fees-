@@ -190,6 +190,7 @@ app.controller("ProjectController", ['$scope', '$rootScope', 'ProjectsModel', fu
 	$scope.subEnable = false;
 	var currIndex;
 	var newInstance = 1;
+	var delcode = 0;	//To prevent looping of delete function
 
 	$rootScope.$on("CallAddPro", function (event, msg, code) {
 		$scope.addProject(msg, code);
@@ -202,6 +203,7 @@ app.controller("ProjectController", ['$scope', '$rootScope', 'ProjectsModel', fu
 	});
 
 	$rootScope.$on("CallDelP", function (event, index) {
+		delcode = 1;
 		$scope.deleteProject(index);
 	});
 
@@ -249,8 +251,10 @@ app.controller("ProjectController", ['$scope', '$rootScope', 'ProjectsModel', fu
 		$scope.projects.splice(index, 1);
 		currIndex = index - 1;
 		$scope.subEnable = false;
+		if(delcode == 0)
+			$rootScope.$emit("CallDelCli", index);
 		$rootScope.$emit("CallDelSOP", index);
-		$rootScope.$emit("CallDelCli", index);
+		delcode = 0;
 	}
 
 	$scope.submitProject = function () {
@@ -260,30 +264,25 @@ app.controller("ProjectController", ['$scope', '$rootScope', 'ProjectsModel', fu
 		if (newInstance == 1) {
 			if (!duplicate) {
 				$rootScope.$emit("CallAddSOP", $scope.projects[currIndex].project_id, 2);
-				console.log("THIS IS THE 1st IF");
 			}
 		} else if (newInstance == 0) {
 			if (!duplicate) {
 				$rootScope.$emit("CallAddCli", $scope.projects[currIndex].client_id, 1);
 				newInstance = 1;
-				console.log("THIS IS THE 2nd IF");
 			} else {
 				alert("Client_id already taken");
 				$scope.subEnable = true;
 				$scope.enabledEdit[currIndex] = true;
-				console.log("THIS IS THE 3rd IF");
 			}
 		} else {
 			if (!duplicate) {
 				$rootScope.$emit("CallAddSOP", $scope.projects[currIndex].project_id, 2);
 				$rootScope.$emit("CallAddCli", $scope.projects[currIndex].client_id, 1);
 				newInstance = 1;
-				console.log("THIS IS THE 4th IF");
 			} else {
 				alert("Client_ID already taken");
 				$scope.subEnable = true;
 				$scope.enabledEdit[currIndex] = true;
-				console.log("THIS IS THE 5th IF");
 			}
 		}
 		console.log("submitProject called");
@@ -318,6 +317,7 @@ app.controller("ClientController", ['$scope', '$rootScope', 'ClientsModel', func
 	var currIndex;
 	var retcode;
 	var newInstance = 1;
+	var delcode = 0;
 
 	$rootScope.$on("CallAddCli", function (event, msg, code) {
 		$scope.retcode = code;
@@ -331,6 +331,7 @@ app.controller("ClientController", ['$scope', '$rootScope', 'ClientsModel', func
 	});
 
 	$rootScope.$on("CallDelCli", function (event, index) {
+		delcode = 1;
 		$scope.deleteClient(index);
 	});
 
@@ -376,8 +377,10 @@ app.controller("ClientController", ['$scope', '$rootScope', 'ClientsModel', func
 		$scope.clients.splice(index, 1);
 		currIndex = index - 1;
 		$scope.subEnable = false;
-		$rootScope.$emit("CallDelP", index);
+		if(delcode == 0)
+			$rootScope.$emit("CallDelP", index);
 		$rootScope.$emit("CallDelRC", index);
+		delcode = 0;
 	}
 
 	$scope.submitClient = function () {
@@ -476,7 +479,7 @@ app.controller("RefCurrencies", ['$scope', '$rootScope', 'RefCurrenciesModel', f
 		$scope.refcurrencies.splice(index, 1);
 		currIndex = index - 1;
 		$scope.subEnable = false;
-		$rootScope.$emit("CallDelCli", index);
+		// $rootScope.$emit("CallDelCli", index);
 	}
 
 	$scope.submitRefCurrencies = function () {
