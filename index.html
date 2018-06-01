@@ -52,7 +52,8 @@
                     </td>
                     <td>
                       <div style="text-align: center;" class="buttons">
-                        <button class="btn btn-primary" ng-click="serviceForm.$valid && editService($index)">
+                        <!-- <button class="btn btn-primary" ng-click="serviceForm.$valid && editService($index)"> -->
+                        <button class="btn btn-primary" ng-click="editService($index)">
                           <i class="fas fa-pencil-alt"></i>
                         </button>
                         <button class="btn btn-danger" ng-click="deleteService($index)">
@@ -64,6 +65,61 @@
                 </tbody>
               </table>
               <button type="submit" class="btn btn-primary" ng-click="serviceForm.$valid && submitService()" ng-disabled="!checkSub()">
+                <i style="margin: 5px; font-size: 25px;" class="fas fa-save"></i>
+              </button>
+            </form>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SERVICES_ON_PROJECTS -->
+  <div ng-controller="ServiceOnProject">
+    <h1 align="center" style="color:#428bca">Services_on_Projects</h1>
+    <div class="container">
+      <div class="row">
+        <!-- <button type="button" style="float:right;margin-bottom: 10px;" class="btn btn-info " ng-click="addProject()">
+          <i class="fas fa-plus"></i>
+        </button> -->
+        <div class="col-md-12">
+
+          <div class="table-responsive">
+            <form id="servicesonprojectform" name="servicesonprojectForm">
+              <table id="mytable" class="table table-bordered">
+                <thead>
+                  <th style="width:5%;">SNo.</th>
+                  <th style="width:10%;">service_code</th>
+                  <th style="width:10%;">project_id</th>
+                  <th style="width:25%;">Actions</th>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="servicesonproject in servicesonproject">
+                    <td>{{$index+1}}</td>
+                    <td>
+                      <input required name="service_code{{$index}}" ng-model="servicesonproject.serviceCode" ng-disabled="!enabledEdit[{{$index}}]"
+                      />
+                    </td>
+                    <td>
+                      <input required name="project_id{{$index}}" ng-model="servicesonproject.project_id" ng-disabled="!enabledEdit[{{$index}}]"
+                      />
+                    </td>
+                    <td>
+                      <div style="text-align: center;" class="buttons">
+                        <!-- <button class="btn btn-primary" ng-click="servicesonprojectForm.$valid && editServiceOnProject($index)"> -->
+                        <button class="btn btn-primary" ng-click="editServiceOnProject($index)">
+                          <i class="fas fa-pencil-alt"></i>
+                        </button>
+                        <!-- <button class="btn btn-danger" ng-click="deleteProject($index)">
+                          <i class="fas fa-trash"></i>
+                        </button> -->
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <button type="submit" class="btn btn-primary" ng-click="servicesonprojectForm.$valid && submitServiceOnProject()" ng-disabled="!checkSub()">
                 <i style="margin: 5px; font-size: 25px;" class="fas fa-save"></i>
               </button>
             </form>
@@ -128,7 +184,8 @@
                     </td>
                     <td>
                       <div style="text-align: center;" class="buttons">
-                        <button class="btn btn-primary" ng-click="projectForm.$valid && editProject($index)">
+                        <!-- <button class="btn btn-primary" ng-click="projectForm.$valid && editProject($index)"> -->
+                        <button class="btn btn-primary" ng-click="editProject($index)">
                           <i class="fas fa-pencil-alt"></i>
                         </button>
                         <button class="btn btn-danger" ng-click="deleteProject($index)">
@@ -165,6 +222,7 @@
               <table id="mytable" class="table table-bordered">
                 <thead>
                   <th style="width:5%;">SNo.</th>
+                  <th style="width:10%;">client_id</th>
                   <th style="width:10%;">currency_code</th>
                   <th style="width:10%;">client_name</th>
                   <th style="width:15%;">client_from_date</th>
@@ -177,6 +235,9 @@
                 <tbody>
                   <tr ng-repeat="client in clients">
                     <td>{{$index+1}}</td>
+                    <td>
+                      <input required name="client_id{{$index}}" ng-model="client.client_id" ng-disabled="!enabledEdit[{{$index}}]" />
+                    </td>
                     <td>
                       <input name="currency_code{{$index}}" ng-model="client.currency_code" ng-disabled="!enabledEdit[{{$index}}]" />
                     </td>
@@ -205,7 +266,8 @@
                     </td>
                     <td>
                       <div style="text-align: center;" class="buttons">
-                        <button class="btn btn-primary" ng-click="clientForm.$valid && editClient($index)">
+                        <!-- <button class="btn btn-primary" ng-click="clientForm.$valid && editClient($index)"> -->
+                        <button class="btn btn-primary" ng-click="editClient($index)">
                           <i class="fas fa-pencil-alt"></i>
                         </button>
                         <button class="btn btn-danger" ng-click="deleteClient($index)">
@@ -226,6 +288,67 @@
       </div>
     </div>
   </div>
+
+  <!-- REF_CURRENCIES -->
+  <div ng-controller="RefCurrencies">
+    <h1 align="center" style="color:#428bca">Ref_Currencies</h1>
+    <div class="container">
+      <div class="row">
+        <!-- <button type="button" style="float:right;margin-bottom: 10px;" class="btn btn-info " ng-click="addProject()">
+            <i class="fas fa-plus"></i>
+          </button> -->
+        <div class="col-md-12">
+
+          <div class="table-responsive">
+            <form id="RefCurrenciesform" name="refcurrenciesForm">
+              <table id="mytable" class="table table-bordered">
+                <thead>
+                  <th style="width:5%;">SNo.</th>
+                  <th style="width:10%;">currency_code</th>
+                  <th style="width:10%;">currency_name</th>
+                  <th style="width:10%;">nominal_exchange_rate</th>
+                  <th style="width:25%;">Actions</th>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="refcurrency in refcurrencies">
+                    <td>{{$index+1}}</td>
+                    <td>
+                      <input required name="currency_code{{$index}}" ng-model="refcurrency.currency_code" ng-disabled="!enabledEdit[{{$index}}]"
+                      />
+                    </td>
+                    <td>
+                        <input name="currency_name{{$index}}" ng-model="refcurrency.currency_name" ng-disabled="!enabledEdit[{{$index}}]"
+                        />
+                      </td>
+                    <td>
+                      <input name="nominal_exchange_rate{{$index}}" ng-model="refcurrency.nominal_exchange_rate" ng-disabled="!enabledEdit[{{$index}}]"
+                      />
+                    </td>
+                    <td>
+                      <div style="text-align: center;" class="buttons">
+                        <!-- <button class="btn btn-primary" ng-click="servicesonprojectForm.$valid && editServiceOnProject($index)"> -->
+                        <button class="btn btn-primary" ng-click="editRefCurrencies($index)">
+                          <i class="fas fa-pencil-alt"></i>
+                        </button>
+                        <!-- <button class="btn btn-danger" ng-click="deleteProject($index)">
+                            <i class="fas fa-trash"></i>
+                          </button> -->
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <button type="submit" class="btn btn-primary" ng-click="refcurrenciesForm.$valid && submitRefCurrencies()" ng-disabled="!checkSub()">
+                <i style="margin: 5px; font-size: 25px;" class="fas fa-save"></i>
+              </button>
+            </form>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <!-- STAFFS -->
   <div ng-controller="StaffController">
@@ -314,8 +437,10 @@
 <script src="js/angular.min.js"></script>
 <script type="text/javascript" src="js/app.js"></script>
 <script type="text/javascript" src="models/services-model.js"></script>
+<script type="text/javascript" src="models/serviceonproject-model.js"></script>
 <script type="text/javascript" src="models/projects-model.js"></script>
 <script type="text/javascript" src="models/clients-model.js"></script>
+<script type="text/javascript" src="models/refcurrencies-model.js"></script>
 <script type="text/javascript" src="models/staffs-model.js"></script>
 
 </html>

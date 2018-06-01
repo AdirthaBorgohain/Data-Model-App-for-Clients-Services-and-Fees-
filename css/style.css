@@ -1,3 +1,6 @@
+html{
+    font-size: 0.1rem !important;
+}
 .container{
     width: 70% !important;
 }
