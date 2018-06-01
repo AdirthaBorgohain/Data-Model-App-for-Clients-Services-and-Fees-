@@ -92,6 +92,8 @@ app.controller("ServiceOnProject", ['$scope', '$rootScope', 'ServicesOnProjectMo
 	$rootScope.$on("CallAddSOP", function (event, msg, code) {
 		$scope.retcode = code;
 		$scope.addServiceOnProject(msg, code);
+		$scope.subEnable = false;
+		$scope.enabledEdit[currIndex] = false;
 	});
 
 	$rootScope.$on("CallDelSOP", function (event, index) {
@@ -116,8 +118,6 @@ app.controller("ServiceOnProject", ['$scope', '$rootScope', 'ServicesOnProjectMo
 		$scope.servicesonproject.push(emp);
 		$scope.enabledEdit[$scope.servicesonproject.length - 1] = true;
 		currIndex = $scope.servicesonproject.length - 1;
-		$scope.subEnable = false;
-		$scope.enabledEdit[currIndex] = false;
 	}
 	$scope.editServiceOnProject = function (index) {
 		console.log("edit index" + index);
@@ -143,11 +143,28 @@ app.controller("ServiceOnProject", ['$scope', '$rootScope', 'ServicesOnProjectMo
 				$scope.subEnable = true;
 				$scope.enabledEdit[currIndex] = true;
 			}
-		} else {
+		} else if ($scope.retcode == 2) {
 			$rootScope.$emit("CheckSDuplicate", $scope.servicesonproject[currIndex].serviceCode);
 			if (!duplicate)
 				$rootScope.$emit("CallAddSer", $scope.servicesonproject[currIndex].serviceCode);
 			else {
+				alert("service_code already taken");
+				$scope.subEnable = true;
+				$scope.enabledEdit[currIndex] = true;
+			}
+		} else {
+			$rootScope.$emit("CheckSDuplicate", $scope.servicesonproject[currIndex].serviceCode);
+			if (!duplicate) {
+				$rootScope.$emit("CallAddSer", $scope.servicesonproject[currIndex].serviceCode);
+				$rootScope.$emit("CheckPDuplicate", $scope.servicesonproject[currIndex].project_id);
+				if (!duplicate)
+					$rootScope.$emit("CallAddPro", $scope.servicesonproject[currIndex].project_id);
+				else {
+					alert("project_id already taken");
+					$scope.subEnable = true;
+					$scope.enabledEdit[currIndex] = true;
+				}
+			} else {
 				alert("service_code already taken");
 				$scope.subEnable = true;
 				$scope.enabledEdit[currIndex] = true;
@@ -240,33 +257,29 @@ app.controller("ProjectController", ['$scope', '$rootScope', 'ProjectsModel', fu
 		$scope.subEnable = false;
 		$scope.enabledEdit[currIndex] = false;
 		$rootScope.$emit("CheckCDuplicate", $scope.projects[currIndex].client_id);
-		if (newInstance == 1){
-			if(!duplicate){
+		if (newInstance == 1) {
+			if (!duplicate) {
 				$rootScope.$emit("CallAddSOP", $scope.projects[currIndex].project_id, 2);
 				console.log("THIS IS THE 1st IF");
 			}
-		}
-		else if (newInstance == 0){
-			if (!duplicate){
-				$rootScope.$emit("CallAddCli", $scope.projects[currIndex].client_id);
+		} else if (newInstance == 0) {
+			if (!duplicate) {
+				$rootScope.$emit("CallAddCli", $scope.projects[currIndex].client_id, 1);
 				newInstance = 1;
 				console.log("THIS IS THE 2nd IF");
-			}
-			else{
+			} else {
 				alert("Client_id already taken");
 				$scope.subEnable = true;
 				$scope.enabledEdit[currIndex] = true;
 				console.log("THIS IS THE 3rd IF");
 			}
-		}
-		else {
-			if (!duplicate){
+		} else {
+			if (!duplicate) {
 				$rootScope.$emit("CallAddSOP", $scope.projects[currIndex].project_id, 2);
-				$rootScope.$emit("CallAddCli", $scope.projects[currIndex].client_id);
+				$rootScope.$emit("CallAddCli", $scope.projects[currIndex].client_id, 1);
 				newInstance = 1;
 				console.log("THIS IS THE 4th IF");
-			}
-			else{
+			} else {
 				alert("Client_ID already taken");
 				$scope.subEnable = true;
 				$scope.enabledEdit[currIndex] = true;
@@ -303,9 +316,11 @@ app.controller("ClientController", ['$scope', '$rootScope', 'ClientsModel', func
 	$scope.enabledEdit = [];
 	$scope.subEnable = false;
 	var currIndex;
+	var retcode;
 	var newInstance = 1;
 
-	$rootScope.$on("CallAddCli", function (event, msg) {
+	$rootScope.$on("CallAddCli", function (event, msg, code) {
+		$scope.retcode = code;
 		$scope.addClient(msg);
 		$scope.subEnable = false;
 		$scope.enabledEdit[currIndex] = false;
@@ -321,17 +336,31 @@ app.controller("ClientController", ['$scope', '$rootScope', 'ClientsModel', func
 
 	$scope.addClient = function (msg) {
 		$scope.subEnable = true;
-		var emp = {
-			client_id: msg,
-			currency_code: "",
-			client_name: "",
-			client_from_date: "",
-			kpi_avg_billable_rate: "",
-			kpi_billing_to_date: "",
-			kpi_client_project_count: "",
-			other_client_details: "",
-			disableEdit: false
-		};
+		if (retcode == 1) {
+			var emp = {
+				client_id: msg,
+				currency_code: "",
+				client_name: "",
+				client_from_date: "",
+				kpi_avg_billable_rate: "",
+				kpi_billing_to_date: "",
+				kpi_client_project_count: "",
+				other_client_details: "",
+				disableEdit: false
+			};
+		} else {
+			var emp = {
+				client_id: "",
+				currency_code: msg,
+				client_name: "",
+				client_from_date: "",
+				kpi_avg_billable_rate: "",
+				kpi_billing_to_date: "",
+				kpi_client_project_count: "",
+				other_client_details: "",
+				disableEdit: false
+			};
+		}
 		$scope.clients.push(emp);
 		$scope.enabledEdit[$scope.clients.length - 1] = true;
 		currIndex = $scope.clients.length - 1;
@@ -358,7 +387,7 @@ app.controller("ClientController", ['$scope', '$rootScope', 'ClientsModel', func
 		// 	$rootScope.$emit("CallAddSOP", $scope.projects[currIndex].project_id, 2);
 		// }
 		$rootScope.$emit("CallAddRC", $scope.clients[currIndex].currency_code);
-		if(newInstance == 1)
+		if (newInstance == 1)
 			$rootScope.$emit("CallAddPro", $scope.clients[currIndex].client_id, 3);
 		console.log("submitClient called");
 		console.log("form submitted:" + angular.toJson($scope.clients));
@@ -387,7 +416,7 @@ app.controller("RefCurrencies", ['$scope', '$rootScope', 'RefCurrenciesModel', f
 	$scope.enabledEdit = [];
 	$scope.subEnable = false;
 	var currIndex;
-	var newInstance = 1; 
+	var newInstance = 1;
 
 	$rootScope.$on("CallAddRC", function (event, msg) {
 		$scope.addRefCurrencies(msg);
@@ -441,7 +470,7 @@ app.controller("RefCurrencies", ['$scope', '$rootScope', 'RefCurrenciesModel', f
 		$scope.subEnable = true;
 		$scope.enabledEdit[index] = true;
 		currIndex = index;
-		newInstance = 0;		
+		newInstance = 0;
 	}
 	$scope.deleteRefCurrencies = function (index) {
 		$scope.refcurrencies.splice(index, 1);
@@ -455,7 +484,7 @@ app.controller("RefCurrencies", ['$scope', '$rootScope', 'RefCurrenciesModel', f
 		$scope.subEnable = false;
 		$scope.enabledEdit[currIndex] = false;
 		if (newInstance == 1)
-			$rootScope.$emit("CallAddCli", $scope.refcurrencies[currIndex].currency_code, 1);
+			$rootScope.$emit("CallAddCli", $scope.refcurrencies[currIndex].currency_code, 2);
 		console.log("submitrefCurrencies called");
 		console.log("form submitted:" + angular.toJson($scope.refcurrencies));
 		newInstance = 1;
