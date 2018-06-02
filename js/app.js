@@ -3,6 +3,8 @@ var app = angular.module('myApp', [
 	'myApp.models.servicesonproject',
 	'myApp.models.projects',
 	'myApp.models.clients',
+	'myApp.models.clientaddress',
+	'myApp.models.address',
 	'myApp.models.refcurrencies',
 	'myApp.models.staffs',
 	'myApp.models.refroles',
@@ -252,8 +254,8 @@ app.controller("ProjectController", ['$scope', '$rootScope', 'ProjectsModel', fu
 		$scope.projects.splice(index, 1);
 		currIndex = index - 1;
 		$scope.subEnable = false;
-		if (delcode == 0)
-			$rootScope.$emit("CallDelCli", index);
+		// if (delcode == 0)
+		// 	$rootScope.$emit("CallDelCli", index);
 		$rootScope.$emit("CallDelSOP", index);
 		$rootScope.$emit("CallDelStOP", index);
 
@@ -265,13 +267,14 @@ app.controller("ProjectController", ['$scope', '$rootScope', 'ProjectsModel', fu
 		$scope.enabledEdit[currIndex] = false;
 		$rootScope.$emit("CheckCDuplicate", $scope.projects[currIndex].client_id);
 		if (newInstance == 1) {
-			if (!duplicate) {
-				$rootScope.$emit("CallAddSOP", $scope.projects[currIndex].project_id, 2);
-				$rootScope.$emit("CallAddStOP", $scope.projects[currIndex].project_id, 1);
-			}
+			// if (!duplicate) {
+			$rootScope.$emit("CallAddSOP", $scope.projects[currIndex].project_id, 2);
+			$rootScope.$emit("CallAddStOP", $scope.projects[currIndex].project_id, 1);
+			// }
 		} else if (newInstance == 0) {
 			if (!duplicate) {
 				$rootScope.$emit("CallAddCli", $scope.projects[currIndex].client_id, 1);
+				$rootScope.$emit("CallAddStOP", $scope.projects[currIndex].project_id, 1);
 				newInstance = 1;
 			} else {
 				alert("Client_id already taken");
@@ -378,9 +381,10 @@ app.controller("ClientController", ['$scope', '$rootScope', 'ClientsModel', func
 		$scope.clients.splice(index, 1);
 		currIndex = index - 1;
 		$scope.subEnable = false;
-		if (delcode == 0)
+		// if (delcode == 0)
 			$rootScope.$emit("CallDelP", index);
-		$rootScope.$emit("CallDelRC", index);
+			$rootScope.$emit("CallDelCA", index);
+		// $rootScope.$emit("CallDelRC", index);
 		delcode = 0;
 	}
 
@@ -390,9 +394,25 @@ app.controller("ClientController", ['$scope', '$rootScope', 'ClientsModel', func
 		// if (newInstance == 1) {
 		// 	$rootScope.$emit("CallAddSOP", $scope.projects[currIndex].project_id, 2);
 		// }
-		$rootScope.$emit("CallAddRC", $scope.clients[currIndex].currency_code);
-		if (newInstance == 1)
-			$rootScope.$emit("CallAddPro", $scope.clients[currIndex].client_id, 3);
+		if (retcode !== 2) {
+			$rootScope.$emit("CheckRCDuplicate", $scope.clients[currIndex].currency_code);
+			if (!duplicate) {
+				$rootScope.$emit("CallAddRC", $scope.clients[currIndex].currency_code);
+				if (newInstance == 1) {
+					$rootScope.$emit("CallAddPro", $scope.clients[currIndex].client_id, 3);
+					$rootScope.$emit("CallAddCA", $scope.clients[currIndex].client_id, 2);
+				}
+			} else {
+				alert("currency_code already taken");
+				$scope.subEnable = true;
+				$scope.enabledEdit[currIndex] = true;
+			}
+		} else {
+			// if (newInstance == 1) {
+				$rootScope.$emit("CallAddPro", $scope.clients[currIndex].client_id, 3);
+				$rootScope.$emit("CallAddCA", $scope.clients[currIndex].client_id, 2);
+			// }
+		}
 		console.log("submitClient called");
 		console.log("form submitted:" + angular.toJson($scope.clients));
 		newInstance = 1;
@@ -412,6 +432,193 @@ app.controller("ClientController", ['$scope', '$rootScope', 'ClientsModel', func
 
 }]);
 
+app.controller("AddressController", ['$scope', '$rootScope', 'AddressModel', function ($scope, $rootScope, AddressModel) {
+	$scope.data = AddressModel.getAddress();
+
+	$scope.addresses = angular.copy($scope.data);
+	$scope.enabledEdit = [];
+	$scope.subEnable = false;
+	var currIndex;
+	var newInstance = 1;
+	var delcode = 0;
+
+	$rootScope.$on("CallAddAddr", function (event, msg) {
+		$scope.addAddress(msg);
+		$scope.subEnable = false;
+		$scope.enabledEdit[currIndex] = false;
+	});
+
+	$rootScope.$on("CheckAddrDuplicate", function (event, aID) {
+		$scope.checkDuplicate(aID);
+	});
+
+	$rootScope.$on("CallDelAddr", function (event, index) {
+		delcode = 1;
+		$scope.deleteAddress(index);
+	});
+
+	$scope.addAddress = function (msg) {
+		$scope.subEnable = true;
+		var emp = {
+			address_id: msg,
+			line_1_no_building: "",
+			line_2_no_street: "",
+			line_3_area_locality: "",
+			town_city: "",
+			state_province: "",
+			country_code: "",
+			disableEdit: false
+		};
+		$scope.addresses.push(emp);
+		$scope.enabledEdit[$scope.addresses.length - 1] = true;
+		currIndex = $scope.addresses.length - 1;
+	}
+
+	$scope.editAddress = function (index) {
+		console.log("edit index" + index);
+		$scope.subEnable = true;
+		$scope.enabledEdit[index] = true;
+		currIndex = index;
+		newInstance = 0;
+	}
+	$scope.deleteAddress = function (index) {
+		$scope.addresses.splice(index, 1);
+		currIndex = index - 1;
+		$scope.subEnable = false;
+		if (delcode == 0)
+			$rootScope.$emit("CallDelCA", index);
+		delcode = 0;
+	}
+
+	$scope.submitAddress = function () {
+		$scope.subEnable = false;
+		$scope.enabledEdit[currIndex] = false;
+		if (newInstance == 1)
+			$rootScope.$emit("CallAddCA", $scope.addresses[currIndex].address_id, 1);
+		console.log("submitAddress called");
+		console.log("form submitted:" + angular.toJson($scope.addresses));
+		newInstance = 1;
+	}
+
+	$scope.checkSub = function () {
+		return ($scope.subEnable);
+	}
+
+	$scope.checkDuplicate = function (aID) {
+		let obj = $scope.addresses.find(o => o.address_id === aID);
+		if (obj !== undefined)
+			duplicate = true;
+		else
+			duplicate = false;
+	}
+
+}]);
+
+
+app.controller("ClientAddressController", ['$scope', '$rootScope', 'ClientAddressModel', function ($scope, $rootScope, ClientAddressModel) {
+	$scope.data = ClientAddressModel.getClientAddress();
+
+	$scope.clientaddresses = angular.copy($scope.data);
+	$scope.enabledEdit = [];
+	$scope.subEnable = false;
+	var currIndex;
+	var retcode; //To check in which entity new attribute will be created 
+
+	$rootScope.$on("CallAddCA", function (event, msg, code) {
+		$scope.retcode = code;
+		$scope.addClientAddress(msg, code);
+		$scope.subEnable = false;
+		$scope.enabledEdit[currIndex] = false;
+	});
+
+	$rootScope.$on("CallDelCA", function (event, index) {
+		$scope.deleteClientAddress(index);
+	});
+
+	$scope.addClientAddress = function (msg, code) {
+		$scope.subEnable = true;
+		if (code == 1) {
+			var emp = {
+				client_id: "",
+				address_id: msg,
+				date_address_from: "",
+				date_address_to: "",
+				disableEdit: false
+			};
+		} else {
+			var emp = {
+				client_id: msg,
+				address_id: "",
+				date_address_from: "",
+				date_address_to: "",
+				disableEdit: false
+			};
+		}
+		$scope.clientaddresses.push(emp);
+		$scope.enabledEdit[$scope.clientaddresses.length - 1] = true;
+		currIndex = $scope.clientaddresses.length - 1;
+	}
+	$scope.editClientAddress = function (index) {
+		console.log("edit index" + index);
+		$scope.subEnable = true;
+		$scope.enabledEdit[index] = true;
+		currIndex = index;
+	}
+	$scope.deleteClientAddress = function (index) {
+		$scope.clientaddresses.splice(index, 1);
+		currIndex = index - 1;
+		$scope.subEnable = false;
+	}
+
+	$scope.submitClientAddress = function () {
+		$scope.subEnable = false;
+		$scope.enabledEdit[currIndex] = false;
+		if ($scope.retcode == 1) {
+			$rootScope.$emit("CheckCDuplicate", $scope.clientaddresses[currIndex].client_id);
+			if (!duplicate) {
+				$rootScope.$emit("CallAddCli", $scope.clientaddresses[currIndex].client_id, 1);
+				$rootScope.$emit("CallAddPro", $scope.clientaddresses[currIndex].client_id, 3);
+			} else {
+				alert("client_id already taken");
+				$scope.subEnable = true;
+				$scope.enabledEdit[currIndex] = true;
+			}
+		} else if ($scope.retcode == 2) {
+			$rootScope.$emit("CheckAddrDuplicate", $scope.clientaddresses[currIndex].address_id);
+			if (!duplicate) {
+				$rootScope.$emit("CallAddAddr", $scope.clientaddresses[currIndex].address_id);
+			} else {
+				alert("address_id already taken");
+				$scope.subEnable = true;
+				$scope.enabledEdit[currIndex] = true;
+			}
+		} else {
+			// $rootScope.$emit("CheckSDuplicate", $scope.clientaddresses[currIndex].serviceCode);
+			if (!duplicate) {
+				// $rootScope.$emit("CallAddSer", $scope.clientaddresses[currIndex].serviceCode);
+				// $rootScope.$emit("CheckPDuplicate", $scope.clientaddresses[currIndex].project_id);
+				if (!duplicate) {
+					// $rootScope.$emit("CallAddPro", $scope.clientaddresses[currIndex].project_id);
+				} else {
+					alert("project_id already taken");
+					$scope.subEnable = true;
+					$scope.enabledEdit[currIndex] = true;
+				}
+			} else {
+				alert("service_code already taken");
+				$scope.subEnable = true;
+				$scope.enabledEdit[currIndex] = true;
+			}
+		}
+		console.log("submitClientAddress called");
+		console.log("form submitted:" + angular.toJson($scope.clientaddresses));
+	}
+
+	$scope.checkSub = function () {
+		return ($scope.subEnable);
+	}
+
+}]);
 
 app.controller("RefCurrenciesController", ['$scope', '$rootScope', 'RefCurrenciesModel', function ($scope, $rootScope, RefCurrenciesModel) {
 	$scope.data = RefCurrenciesModel.getRefCurrencies();
@@ -427,6 +634,10 @@ app.controller("RefCurrenciesController", ['$scope', '$rootScope', 'RefCurrencie
 		$scope.addRefCurrencies(msg);
 		$scope.subEnable = false;
 		$scope.enabledEdit[currIndex] = false;
+	});
+
+	$rootScope.$on("CheckRCDuplicate", function (event, cc) {
+		$scope.checkDuplicate(cc);
 	});
 
 	$rootScope.$on("CallDelRC", function (event, index) {
@@ -476,6 +687,14 @@ app.controller("RefCurrenciesController", ['$scope', '$rootScope', 'RefCurrencie
 
 	$scope.checkSub = function () {
 		return ($scope.subEnable);
+	}
+
+	$scope.checkDuplicate = function (cc) {
+		let obj = $scope.refcurrencies.find(o => o.currency_code === cc);
+		if (obj !== undefined)
+			duplicate = true;
+		else
+			duplicate = false;
 	}
 
 }]);
@@ -716,77 +935,71 @@ app.controller("StaffOnProjectController", ['$scope', '$rootScope', 'StaffsOnPro
 		$scope.enabledEdit[currIndex] = false;
 		if ($scope.retcode == 1) {
 			$rootScope.$emit("CheckStDuplicate", $scope.staffsonproject[currIndex].staff_id);
-			if (!duplicate){
+			if (!duplicate) {
 				$rootScope.$emit("CheckRRDuplicate", $scope.staffsonproject[currIndex].role_code);
-				if (!duplicate){
+				if (!duplicate) {
 					$rootScope.$emit("CallAddSt", $scope.staffsonproject[currIndex].staff_id);
 					$rootScope.$emit("CallAddRR", $scope.staffsonproject[currIndex].role_code);
+				} else {
+					alert("role_code already taken");
+					$scope.subEnable = true;
+					$scope.enabledEdit[currIndex] = true;
 				}
-				else {
-				alert("role_code already taken");
-				$scope.subEnable = true;
-				$scope.enabledEdit[currIndex] = true;
-				}
-			} else{
+			} else {
 				alert("staff_id already taken");
 				$scope.subEnable = true;
 				$scope.enabledEdit[currIndex] = true;
 			}
 		} else if ($scope.retcode == 2) {
 			$rootScope.$emit("CheckPDuplicate", $scope.staffsonproject[currIndex].project_id);
-			if (!duplicate){
+			if (!duplicate) {
 				$rootScope.$emit("CheckRRDuplicate", $scope.staffsonproject[currIndex].role_code);
-				if (!duplicate){
+				if (!duplicate) {
 					$rootScope.$emit("CallAddPro", $scope.staffsonproject[currIndex].project_id);
 					$rootScope.$emit("CallAddRR", $scope.staffsonproject[currIndex].role_code);
+				} else {
+					alert("role_code already taken");
+					$scope.subEnable = true;
+					$scope.enabledEdit[currIndex] = true;
 				}
-				else {
-				alert("role_code already taken");
-				$scope.subEnable = true;
-				$scope.enabledEdit[currIndex] = true;
-				}
-			} else{
+			} else {
 				alert("project_id already taken");
 				$scope.subEnable = true;
 				$scope.enabledEdit[currIndex] = true;
 			}
 		} else if ($scope.retcode == 3) {
 			$rootScope.$emit("CheckPDuplicate", $scope.staffsonproject[currIndex].project_id);
-			if (!duplicate){
+			if (!duplicate) {
 				$rootScope.$emit("CheckStDuplicate", $scope.staffsonproject[currIndex].staff_id);
-				if (!duplicate){
+				if (!duplicate) {
 					$rootScope.$emit("CallAddPro", $scope.staffsonproject[currIndex].project_id);
 					$rootScope.$emit("CallAddSt", $scope.staffsonproject[currIndex].staff_id);
+				} else {
+					alert("staff_id already taken");
+					$scope.subEnable = true;
+					$scope.enabledEdit[currIndex] = true;
 				}
-				else {
-				alert("staff_id already taken");
-				$scope.subEnable = true;
-				$scope.enabledEdit[currIndex] = true;
-				}
-			} else{
+			} else {
 				alert("project_id already taken");
 				$scope.subEnable = true;
 				$scope.enabledEdit[currIndex] = true;
 			}
-		}
-		 else {
+		} else {
 			$rootScope.$emit("CheckPDuplicate", $scope.staffsonproject[currIndex].project_id);
 			if (!duplicate) {
 				$rootScope.$emit("CheckStDuplicate", $scope.staffsonproject[currIndex].staff_id);
-				if (!duplicate){
+				if (!duplicate) {
 					$rootScope.$emit("CheckRRDuplicate", $scope.staffsonproject[currIndex].role_code);
-					if (!duplicate){
+					if (!duplicate) {
 						$rootScope.$emit("CallAddPro", $scope.staffsonproject[currIndex].project_id);
 						$rootScope.$emit("CallAddSt", $scope.staffsonproject[currIndex].staff_id);
 						$rootScope.$emit("CallAddRR", $scope.staffsonproject[currIndex].role_code);
-					}
-					else{
+					} else {
 						alert("role_code already taken");
 						$scope.subEnable = true;
 						$scope.enabledEdit[currIndex] = true;
 					}
-				}	
-				else {
+				} else {
 					alert("staff_id already taken");
 					$scope.subEnable = true;
 					$scope.enabledEdit[currIndex] = true;

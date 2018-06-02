@@ -295,8 +295,8 @@
     <div class="container">
       <div class="row">
         <button type="button" style="float:right;margin-bottom: 10px;" class="btn btn-info " ng-click="addRefCurrencies()">
-            <i class="fas fa-plus"></i>
-          </button>
+          <i class="fas fa-plus"></i>
+        </button>
         <div class="col-md-12">
 
           <div class="table-responsive">
@@ -317,9 +317,8 @@
                       />
                     </td>
                     <td>
-                        <input name="currency_name{{$index}}" ng-model="refcurrency.currency_name" ng-disabled="!enabledEdit[{{$index}}]"
-                        />
-                      </td>
+                      <input name="currency_name{{$index}}" ng-model="refcurrency.currency_name" ng-disabled="!enabledEdit[{{$index}}]" />
+                    </td>
                     <td>
                       <input name="nominal_exchange_rate{{$index}}" ng-model="refcurrency.nominal_exchange_rate" ng-disabled="!enabledEdit[{{$index}}]"
                       />
@@ -331,8 +330,8 @@
                           <i class="fas fa-pencil-alt"></i>
                         </button>
                         <button class="btn btn-danger" ng-click="deleteRefCurrencies($index)">
-                            <i class="fas fa-trash"></i>
-                          </button>
+                          <i class="fas fa-trash"></i>
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -348,6 +347,151 @@
       </div>
     </div>
   </div>
+
+  <!-- CLIENT_ADDRESSES -->
+  <div ng-controller="ClientAddressController">
+    <h1 align="center" style="color:#428bca">Client_Addresses </h1>
+    <div class="container">
+      <div class="row">
+        <button type="button" style="float:right;margin-bottom: 10px;" class="btn btn-info " ng-click="addClientAddress()">
+          <i class="fas fa-plus"></i>
+        </button>
+        <div class="col-md-12">
+
+          <div class="table-responsive">
+            <form id="clientaddressform" name="clientaddressForm">
+              <table id="mytable" class="table table-bordered">
+                <thead>
+                  <th style="width:5%;">SNo.</th>
+                  <th style="width:10%;">client_id</th>
+                  <th style="width:10%;">address_id</th>
+                  <th style="width:10%;">date_address_from</th>
+                  <th style="width:10%;">date_address_to</th>
+                  <th style="width:25%;">Actions</th>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="clientaddress in clientaddresses">
+                    <td>{{$index+1}}</td>
+                    <td>
+                      <input name="client_id{{$index}}" ng-model="clientaddress.client_id" ng-disabled="!enabledEdit[{{$index}}]" />
+                    </td>
+                    <td>
+                      <input name="address_id{{$index}}" ng-model="clientaddress.address_id" ng-disabled="!enabledEdit[{{$index}}]" />
+                    </td>
+                    <td>
+                      <input required type="date" name="date_address_from{{$index}}" ng-model="clientaddress.date_address_from" ng-disabled="!enabledEdit[{{$index}}]"
+                      />
+                    </td>
+                    <td>
+                      <input type="date" name="date_address_to{{$index}}" ng-model="clientaddress.date_address_to" ng-disabled="!enabledEdit[{{$index}}]"
+                      />
+                    </td>
+                    <td>
+                      <div style="text-align: center;" class="buttons">
+                        <!-- <button class="btn btn-primary" ng-click="serviceForm.$valid && editService($index)"> -->
+                        <button class="btn btn-primary" ng-click="editClientAddress($index)">
+                          <i class="fas fa-pencil-alt"></i>
+                        </button>
+                        <button class="btn btn-danger" ng-click="deleteClientAddress($index)">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <button type="submit" class="btn btn-primary" ng-click="clientaddressForm.$valid && submitClientAddress()" ng-disabled="!checkSub()">
+                <i style="margin: 5px; font-size: 25px;" class="fas fa-save"></i>
+              </button>
+            </form>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ADDRESSES -->
+  <div ng-controller="AddressController">
+    <h1 align="center" style="color:#428bca">Addresses </h1>
+    <div class="container">
+      <div class="row">
+        <button type="button" style="float:right;margin-bottom: 10px;" class="btn btn-info " ng-click="addAddress()">
+          <i class="fas fa-plus"></i>
+        </button>
+        <div class="col-md-12">
+
+          <div class="table-responsive">
+            <form id="addressform" name="addressForm">
+              <table id="mytable" class="table table-bordered">
+                <thead>
+                  <th style="width:5%;">SNo.</th>
+                  <th style="width:10%;">address_id</th>
+                  <th style="width:10%;">line_1_no._building</th>
+                  <th style="width:10%;">line_2_no._street</th>
+                  <th style="width:15%;">line_3_area_locality</th>
+                  <th style="width:10%;">town_city</th>
+                  <th style="width:10%;">state_province</th>
+                  <th style="width:15%;">country_code</th>
+                  <th style="width:25%;">Actions</th>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="address in addresses">
+                    <td>{{$index+1}}</td>
+                    <td>
+                      <input required name="address_id{{$index}}" ng-model="address.address_id" ng-disabled="!enabledEdit[{{$index}}]" />
+                    </td>
+                    <td>
+                      <input name="line_1_no_building{{$index}}" ng-model="address.line_1_no_building" ng-disabled="!enabledEdit[{{$index}}]" />
+                    </td>
+                    <td>
+                      <input name="line_2_no_street{{$index}}" ng-model="address.line_2_no_street" ng-disabled="!enabledEdit[{{$index}}]" />
+                    </td>
+                    <td>
+                      <input name="line_3_area_locality{{$index}}" ng-model="address.line_3_area_locality" ng-disabled="!enabledEdit[{{$index}}]"
+                      />
+                    </td>
+                    <td>
+                      <input name="town_city{{$index}}" ng-model="address.town_city" ng-disabled="!enabledEdit[{{$index}}]" />
+                    </td>
+                    <td>
+                      <input name="state_province{{$index}}" ng-model="address.state_province" ng-disabled="!enabledEdit[{{$index}}]" />
+                    </td>
+                    <td>
+                      <input name="country_code{{$index}}" ng-model="address.country_code" ng-disabled="!enabledEdit[{{$index}}]" />
+                    </td>
+                    <td>
+                      <div style="text-align: center;" class="buttons">
+                        <!-- <button class="btn btn-primary" ng-click="clientForm.$valid && editClient($index)"> -->
+                        <button class="btn btn-primary" ng-click="editAddress($index)">
+                          <i class="fas fa-pencil-alt"></i>
+                        </button>
+                        <button class="btn btn-danger" ng-click="deleteAddress($index)">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <button type="submit" class="btn btn-primary" ng-click="addressForm.$valid && submitAddress()" ng-disabled="!checkSub()">
+                <i style="margin: 5px; font-size: 25px;" class="fas fa-save"></i>
+              </button>
+            </form>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
 
 
   <!-- STAFFS -->
@@ -430,61 +574,60 @@
     </div>
   </div>
 
-    <!-- REFROLES -->
-    <div ng-controller="RefRolesController">
-      <h1 align="center" style="color:#428bca">Ref_Roles </h1>
-      <div class="container">
-        <div class="row">
-          <button type="button" style="float:right;margin-bottom: 10px;" class="btn btn-info " ng-click="addRefRoles()">
-            <i class="fas fa-plus"></i>
-          </button>
-          <div class="col-md-12">
-  
-            <div class="table-responsive">
-              <form id="refroleform" name="refroleForm">
-                <table id="mytable" class="table table-bordered">
-                  <thead>
-                    <th style="width:5%;">SNo.</th>
-                    <th style="width:10%;">role_code</th>
-                    <th style="width:10%;">role_name</th>
-                    <th style="width:25%;">Actions</th>
-                  </thead>
-                  <tbody>
-                    <tr ng-repeat="refrole in refroles">
-                      <td>{{$index+1}}</td>
-                      <td>
-                        <input required name="role_code{{$index}}" ng-model="refrole.role_code" ng-disabled="!enabledEdit[{{$index}}]" />
-                      </td>
-                      <td>
-                        <input name="role_name{{$index}}" ng-model="refrole.role_name" ng-disabled="!enabledEdit[{{$index}}]"
-                        />
-                      </td>
-                      <td>
-                        <div style="text-align: center;" class="buttons">
-                          <!-- <button class="btn btn-primary" ng-click="serviceForm.$valid && editService($index)"> -->
-                          <button class="btn btn-primary" ng-click="editRefRoles($index)">
-                            <i class="fas fa-pencil-alt"></i>
-                          </button>
-                          <button class="btn btn-danger" ng-click="deleteRefRoles($index)">
-                            <i class="fas fa-trash"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <button type="submit" class="btn btn-primary" ng-click="refroleForm.$valid && submitRefRoles()" ng-disabled="!checkSub()">
-                  <i style="margin: 5px; font-size: 25px;" class="fas fa-save"></i>
-                </button>
-              </form>
-              <div class="clearfix"></div>
-            </div>
+  <!-- REFROLES -->
+  <div ng-controller="RefRolesController">
+    <h1 align="center" style="color:#428bca">Ref_Roles </h1>
+    <div class="container">
+      <div class="row">
+        <button type="button" style="float:right;margin-bottom: 10px;" class="btn btn-info " ng-click="addRefRoles()">
+          <i class="fas fa-plus"></i>
+        </button>
+        <div class="col-md-12">
+
+          <div class="table-responsive">
+            <form id="refroleform" name="refroleForm">
+              <table id="mytable" class="table table-bordered">
+                <thead>
+                  <th style="width:5%;">SNo.</th>
+                  <th style="width:10%;">role_code</th>
+                  <th style="width:10%;">role_name</th>
+                  <th style="width:25%;">Actions</th>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="refrole in refroles">
+                    <td>{{$index+1}}</td>
+                    <td>
+                      <input required name="role_code{{$index}}" ng-model="refrole.role_code" ng-disabled="!enabledEdit[{{$index}}]" />
+                    </td>
+                    <td>
+                      <input name="role_name{{$index}}" ng-model="refrole.role_name" ng-disabled="!enabledEdit[{{$index}}]" />
+                    </td>
+                    <td>
+                      <div style="text-align: center;" class="buttons">
+                        <!-- <button class="btn btn-primary" ng-click="serviceForm.$valid && editService($index)"> -->
+                        <button class="btn btn-primary" ng-click="editRefRoles($index)">
+                          <i class="fas fa-pencil-alt"></i>
+                        </button>
+                        <button class="btn btn-danger" ng-click="deleteRefRoles($index)">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <button type="submit" class="btn btn-primary" ng-click="refroleForm.$valid && submitRefRoles()" ng-disabled="!checkSub()">
+                <i style="margin: 5px; font-size: 25px;" class="fas fa-save"></i>
+              </button>
+            </form>
+            <div class="clearfix"></div>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- STAFF_ON_PROJECTS -->
+  <!-- STAFF_ON_PROJECTS -->
   <div ng-controller="StaffOnProjectController">
     <h1 align="center" style="color:#428bca">Staff_on_Projects </h1>
     <div class="container">
@@ -512,7 +655,8 @@
                   <tr ng-repeat="staffonproject in staffsonproject">
                     <td>{{$index+1}}</td>
                     <td>
-                      <input required name="staff_on_project_period_id{{$index}}" ng-model="staffonproject.staff_on_project_period_id" ng-disabled="!enabledEdit[{{$index}}]" />
+                      <input required name="staff_on_project_period_id{{$index}}" ng-model="staffonproject.staff_on_project_period_id" ng-disabled="!enabledEdit[{{$index}}]"
+                      />
                     </td>
                     <td>
                       <input name="project_id{{$index}}" ng-model="staffonproject.project_id" ng-disabled="!enabledEdit[{{$index}}]" />
@@ -521,20 +665,16 @@
                       <input name="staff_id{{$index}}" ng-model="staffonproject.staff_id" ng-disabled="!enabledEdit[{{$index}}]" />
                     </td>
                     <td>
-                      <input name="role_code{{$index}}" ng-model="staffonproject.role_code" ng-disabled="!enabledEdit[{{$index}}]"
-                      />
+                      <input name="role_code{{$index}}" ng-model="staffonproject.role_code" ng-disabled="!enabledEdit[{{$index}}]" />
                     </td>
                     <td>
-                      <input name="from_datetime{{$index}}" ng-model="staffonproject.from_datetime" ng-disabled="!enabledEdit[{{$index}}]"
-                      />
+                      <input name="from_datetime{{$index}}" ng-model="staffonproject.from_datetime" ng-disabled="!enabledEdit[{{$index}}]" />
                     </td>
                     <td>
-                      <input name="to_datetime{{$index}}" ng-model="staffonproject.to_datetime" ng-disabled="!enabledEdit[{{$index}}]"
-                      />
+                      <input name="to_datetime{{$index}}" ng-model="staffonproject.to_datetime" ng-disabled="!enabledEdit[{{$index}}]" />
                     </td>
                     <td>
-                      <input name="hourly_rate{{$index}}" ng-model="staffonproject.hourly_rate" ng-disabled="!enabledEdit[{{$index}}]"
-                      />
+                      <input name="hourly_rate{{$index}}" ng-model="staffonproject.hourly_rate" ng-disabled="!enabledEdit[{{$index}}]" />
                     </td>
                     <td>
                       <div style="text-align: center;" class="buttons">
@@ -571,6 +711,8 @@
 <script type="text/javascript" src="models/serviceonproject-model.js"></script>
 <script type="text/javascript" src="models/projects-model.js"></script>
 <script type="text/javascript" src="models/clients-model.js"></script>
+<script type="text/javascript" src="models/clientaddress-model.js"></script>
+<script type="text/javascript" src="models/address-model.js"></script>
 <script type="text/javascript" src="models/refcurrencies-model.js"></script>
 <script type="text/javascript" src="models/staffs-model.js"></script>
 <script type="text/javascript" src="models/refroles-model.js"></script>
