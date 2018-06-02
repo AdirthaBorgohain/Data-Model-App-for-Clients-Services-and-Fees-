@@ -76,7 +76,7 @@
   </div>
 
   <!-- SERVICES_ON_PROJECTS -->
-  <div ng-controller="ServiceOnProject">
+  <div ng-controller="ServiceOnProjectController">
     <h1 align="center" style="color:#428bca">Services_on_Projects</h1>
     <div class="container">
       <div class="row">
@@ -290,7 +290,7 @@
   </div>
 
   <!-- REF_CURRENCIES -->
-  <div ng-controller="RefCurrencies">
+  <div ng-controller="RefCurrenciesController">
     <h1 align="center" style="color:#428bca">Ref_Currencies</h1>
     <div class="container">
       <div class="row">
@@ -330,9 +330,9 @@
                         <button class="btn btn-primary" ng-click="editRefCurrencies($index)">
                           <i class="fas fa-pencil-alt"></i>
                         </button>
-                        <!-- <button class="btn btn-danger" ng-click="deleteProject($index)">
+                        <button class="btn btn-danger" ng-click="deleteRefCurrencies($index)">
                             <i class="fas fa-trash"></i>
-                          </button> -->
+                          </button>
                       </div>
                     </td>
                   </tr>
@@ -430,6 +430,137 @@
     </div>
   </div>
 
+    <!-- REFROLES -->
+    <div ng-controller="RefRolesController">
+      <h1 align="center" style="color:#428bca">Ref_Roles </h1>
+      <div class="container">
+        <div class="row">
+          <button type="button" style="float:right;margin-bottom: 10px;" class="btn btn-info " ng-click="addRefRoles()">
+            <i class="fas fa-plus"></i>
+          </button>
+          <div class="col-md-12">
+  
+            <div class="table-responsive">
+              <form id="refroleform" name="refroleForm">
+                <table id="mytable" class="table table-bordered">
+                  <thead>
+                    <th style="width:5%;">SNo.</th>
+                    <th style="width:10%;">role_code</th>
+                    <th style="width:10%;">role_name</th>
+                    <th style="width:25%;">Actions</th>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="refrole in refroles">
+                      <td>{{$index+1}}</td>
+                      <td>
+                        <input required name="role_code{{$index}}" ng-model="refrole.role_code" ng-disabled="!enabledEdit[{{$index}}]" />
+                      </td>
+                      <td>
+                        <input name="role_name{{$index}}" ng-model="refrole.role_name" ng-disabled="!enabledEdit[{{$index}}]"
+                        />
+                      </td>
+                      <td>
+                        <div style="text-align: center;" class="buttons">
+                          <!-- <button class="btn btn-primary" ng-click="serviceForm.$valid && editService($index)"> -->
+                          <button class="btn btn-primary" ng-click="editRefRoles($index)">
+                            <i class="fas fa-pencil-alt"></i>
+                          </button>
+                          <button class="btn btn-danger" ng-click="deleteRefRoles($index)">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <button type="submit" class="btn btn-primary" ng-click="refroleForm.$valid && submitRefRoles()" ng-disabled="!checkSub()">
+                  <i style="margin: 5px; font-size: 25px;" class="fas fa-save"></i>
+                </button>
+              </form>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STAFF_ON_PROJECTS -->
+  <div ng-controller="StaffOnProjectController">
+    <h1 align="center" style="color:#428bca">Staff_on_Projects </h1>
+    <div class="container">
+      <div class="row">
+        <button type="button" style="float:right;margin-bottom: 10px;" class="btn btn-info " ng-click="addStaffOnProject()">
+          <i class="fas fa-plus"></i>
+        </button>
+        <div class="col-md-12">
+
+          <div class="table-responsive">
+            <form id="staffsonprojectform" name="staffsonprojectForm">
+              <table id="mytable" class="table table-bordered">
+                <thead>
+                  <th style="width:5%;">SNo.</th>
+                  <th style="width:10%;">staff_on_project_period_id</th>
+                  <th style="width:10%;">project_id</th>
+                  <th style="width:10%;">staff_id</th>
+                  <th style="width:15%;">role_code</th>
+                  <th style="width:10%;">from_datetime</th>
+                  <th style="width:10%;">to_datetime</th>
+                  <th style="width:15%;">hourly_rate</th>
+                  <th style="width:25%;">Actions</th>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="staffonproject in staffsonproject">
+                    <td>{{$index+1}}</td>
+                    <td>
+                      <input required name="staff_on_project_period_id{{$index}}" ng-model="staffonproject.staff_on_project_period_id" ng-disabled="!enabledEdit[{{$index}}]" />
+                    </td>
+                    <td>
+                      <input name="project_id{{$index}}" ng-model="staffonproject.project_id" ng-disabled="!enabledEdit[{{$index}}]" />
+                    </td>
+                    <td>
+                      <input name="staff_id{{$index}}" ng-model="staffonproject.staff_id" ng-disabled="!enabledEdit[{{$index}}]" />
+                    </td>
+                    <td>
+                      <input name="role_code{{$index}}" ng-model="staffonproject.role_code" ng-disabled="!enabledEdit[{{$index}}]"
+                      />
+                    </td>
+                    <td>
+                      <input name="from_datetime{{$index}}" ng-model="staffonproject.from_datetime" ng-disabled="!enabledEdit[{{$index}}]"
+                      />
+                    </td>
+                    <td>
+                      <input name="to_datetime{{$index}}" ng-model="staffonproject.to_datetime" ng-disabled="!enabledEdit[{{$index}}]"
+                      />
+                    </td>
+                    <td>
+                      <input name="hourly_rate{{$index}}" ng-model="staffonproject.hourly_rate" ng-disabled="!enabledEdit[{{$index}}]"
+                      />
+                    </td>
+                    <td>
+                      <div style="text-align: center;" class="buttons">
+                        <!-- <button class="btn btn-primary" ng-click="clientForm.$valid && editClient($index)"> -->
+                        <button class="btn btn-primary" ng-click="editStaffOnProject($index)">
+                          <i class="fas fa-pencil-alt"></i>
+                        </button>
+                        <!-- <button class="btn btn-danger" ng-click="deleteStaffOnProject($index)">
+                          <i class="fas fa-trash"></i>
+                        </button> -->
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <button type="submit" class="btn btn-primary" ng-click="staffsonprojectForm.$valid && submitStaffOnProject()" ng-disabled="!checkSub()">
+                <i style="margin: 5px; font-size: 25px;" class="fas fa-save"></i>
+              </button>
+            </form>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </body>
 
 <script src="js/jquery.js"></script>
@@ -442,5 +573,7 @@
 <script type="text/javascript" src="models/clients-model.js"></script>
 <script type="text/javascript" src="models/refcurrencies-model.js"></script>
 <script type="text/javascript" src="models/staffs-model.js"></script>
+<script type="text/javascript" src="models/refroles-model.js"></script>
+<script type="text/javascript" src="models/staffonproject-model.js"></script>
 
 </html>

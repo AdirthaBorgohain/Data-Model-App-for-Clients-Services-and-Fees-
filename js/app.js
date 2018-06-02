@@ -4,7 +4,9 @@ var app = angular.module('myApp', [
 	'myApp.models.projects',
 	'myApp.models.clients',
 	'myApp.models.refcurrencies',
-	'myApp.models.staffs'
+	'myApp.models.staffs',
+	'myApp.models.refroles',
+	'myApp.models.staffsonproject'
 ]);
 
 var duplicate; //To check duplicate entries 
@@ -79,7 +81,7 @@ app.controller("ServiceController", ['$scope', '$rootScope', 'ServicesModel', fu
 }]);
 
 
-app.controller("ServiceOnProject", ['$scope', '$rootScope', 'ServicesOnProjectModel', function ($scope, $rootScope, ServicesOnProjectModel) {
+app.controller("ServiceOnProjectController", ['$scope', '$rootScope', 'ServicesOnProjectModel', function ($scope, $rootScope, ServicesOnProjectModel) {
 	$scope.data = ServicesOnProjectModel.getServicesOnProject();
 
 	$scope.servicesonproject = angular.copy($scope.data);
@@ -87,7 +89,6 @@ app.controller("ServiceOnProject", ['$scope', '$rootScope', 'ServicesOnProjectMo
 	$scope.subEnable = false;
 	var currIndex;
 	var retcode; //To check in which entity new attribute will be created 
-	//var duplicate; //To check duplicate entries 
 
 	$rootScope.$on("CallAddSOP", function (event, msg, code) {
 		$scope.retcode = code;
@@ -190,7 +191,7 @@ app.controller("ProjectController", ['$scope', '$rootScope', 'ProjectsModel', fu
 	$scope.subEnable = false;
 	var currIndex;
 	var newInstance = 1;
-	var delcode = 0;	//To prevent looping of delete function
+	var delcode = 0; //To prevent looping of delete function
 
 	$rootScope.$on("CallAddPro", function (event, msg, code) {
 		$scope.addProject(msg, code);
@@ -251,9 +252,11 @@ app.controller("ProjectController", ['$scope', '$rootScope', 'ProjectsModel', fu
 		$scope.projects.splice(index, 1);
 		currIndex = index - 1;
 		$scope.subEnable = false;
-		if(delcode == 0)
+		if (delcode == 0)
 			$rootScope.$emit("CallDelCli", index);
 		$rootScope.$emit("CallDelSOP", index);
+		$rootScope.$emit("CallDelStOP", index);
+
 		delcode = 0;
 	}
 
@@ -264,6 +267,7 @@ app.controller("ProjectController", ['$scope', '$rootScope', 'ProjectsModel', fu
 		if (newInstance == 1) {
 			if (!duplicate) {
 				$rootScope.$emit("CallAddSOP", $scope.projects[currIndex].project_id, 2);
+				$rootScope.$emit("CallAddStOP", $scope.projects[currIndex].project_id, 1);
 			}
 		} else if (newInstance == 0) {
 			if (!duplicate) {
@@ -277,6 +281,7 @@ app.controller("ProjectController", ['$scope', '$rootScope', 'ProjectsModel', fu
 		} else {
 			if (!duplicate) {
 				$rootScope.$emit("CallAddSOP", $scope.projects[currIndex].project_id, 2);
+				$rootScope.$emit("CallAddStOP", $scope.projects[currIndex].project_id, 1);
 				$rootScope.$emit("CallAddCli", $scope.projects[currIndex].client_id, 1);
 				newInstance = 1;
 			} else {
@@ -303,10 +308,6 @@ app.controller("ProjectController", ['$scope', '$rootScope', 'ProjectsModel', fu
 }]);
 
 
-
-
-
-
 app.controller("ClientController", ['$scope', '$rootScope', 'ClientsModel', function ($scope, $rootScope, ClientsModel) {
 
 	$scope.data = ClientsModel.getClients();
@@ -320,7 +321,7 @@ app.controller("ClientController", ['$scope', '$rootScope', 'ClientsModel', func
 	var delcode = 0;
 
 	$rootScope.$on("CallAddCli", function (event, msg, code) {
-		$scope.retcode = code;
+		retcode = code;
 		$scope.addClient(msg);
 		$scope.subEnable = false;
 		$scope.enabledEdit[currIndex] = false;
@@ -377,7 +378,7 @@ app.controller("ClientController", ['$scope', '$rootScope', 'ClientsModel', func
 		$scope.clients.splice(index, 1);
 		currIndex = index - 1;
 		$scope.subEnable = false;
-		if(delcode == 0)
+		if (delcode == 0)
 			$rootScope.$emit("CallDelP", index);
 		$rootScope.$emit("CallDelRC", index);
 		delcode = 0;
@@ -412,7 +413,7 @@ app.controller("ClientController", ['$scope', '$rootScope', 'ClientsModel', func
 }]);
 
 
-app.controller("RefCurrencies", ['$scope', '$rootScope', 'RefCurrenciesModel', function ($scope, $rootScope, RefCurrenciesModel) {
+app.controller("RefCurrenciesController", ['$scope', '$rootScope', 'RefCurrenciesModel', function ($scope, $rootScope, RefCurrenciesModel) {
 	$scope.data = RefCurrenciesModel.getRefCurrencies();
 
 	$scope.refcurrencies = angular.copy($scope.data);
@@ -420,6 +421,7 @@ app.controller("RefCurrencies", ['$scope', '$rootScope', 'RefCurrenciesModel', f
 	$scope.subEnable = false;
 	var currIndex;
 	var newInstance = 1;
+	var delcode = 0;
 
 	$rootScope.$on("CallAddRC", function (event, msg) {
 		$scope.addRefCurrencies(msg);
@@ -428,6 +430,7 @@ app.controller("RefCurrencies", ['$scope', '$rootScope', 'RefCurrenciesModel', f
 	});
 
 	$rootScope.$on("CallDelRC", function (event, index) {
+		delcode = 1;
 		$scope.deleteRefCurrencies(index);
 	});
 
@@ -444,30 +447,6 @@ app.controller("RefCurrencies", ['$scope', '$rootScope', 'RefCurrenciesModel', f
 		currIndex = $scope.refcurrencies.length - 1;
 	}
 
-	// $scope.addRefCurrencies = function (msg, code) {
-	// 	$scope.subEnable = true;
-	// 	if (code == 1) {
-	// 		var emp = {
-	// 			currency_code: msg,
-	// 			currency_name: "",
-	// 			nominal_exchange_rate: "",
-	// 			disableEdit: false
-	// 		};
-	// 	} else {
-	// 		var emp = {
-	// 			currency_code: "",
-	// 			currency_name: msg,
-	// 			nominal_exchange_rate: "",
-	// 			disableEdit: false
-	// 		};
-	// 	}
-	// 	$scope.refcurrencies.push(emp);
-	// 	$scope.enabledEdit[$scope.refcurrencies.length - 1] = true;
-	// 	currIndex = $scope.refcurrencies.length - 1;
-	// 	$scope.subEnable = false;
-	// 	$scope.enabledEdit[currIndex] = false;
-	// }
-
 	$scope.editRefCurrencies = function (index) {
 		console.log("edit index" + index);
 		$scope.subEnable = true;
@@ -479,7 +458,9 @@ app.controller("RefCurrencies", ['$scope', '$rootScope', 'RefCurrenciesModel', f
 		$scope.refcurrencies.splice(index, 1);
 		currIndex = index - 1;
 		$scope.subEnable = false;
-		// $rootScope.$emit("CallDelCli", index);
+		if (delcode == 0)
+			$rootScope.$emit("CallDelCli", index);
+		delcode = 0;
 	}
 
 	$scope.submitRefCurrencies = function () {
@@ -491,31 +472,6 @@ app.controller("RefCurrencies", ['$scope', '$rootScope', 'RefCurrenciesModel', f
 		console.log("submitrefCurrencies called");
 		console.log("form submitted:" + angular.toJson($scope.refcurrencies));
 		newInstance = 1;
-
-
-		// $scope.subEnable = false;
-		// $scope.enabledEdit[currIndex] = false;
-		// if ($scope.retcode == 1) {
-		// 	$rootScope.$emit("CheckPDuplicate", $scope.refcurrencies[currIndex].project_id);
-		// 	if (!duplicate)
-		// 		$rootScope.$emit("CallAddPro", $scope.refcurrencies[currIndex].project_id);
-		// 	else {
-		// 		alert("project_id already taken");
-		// 		$scope.subEnable = true;
-		// 		$scope.enabledEdit[currIndex] = true;
-		// 	}
-		// } else {
-		// 	$rootScope.$emit("CheckSDuplicate", $scope.refcurrencies[currIndex].serviceCode);
-		// 	if (!duplicate)
-		// 		$rootScope.$emit("CallAddSer", $scope.refcurrencies[currIndex].serviceCode);
-		// 	else {
-		// 		alert("service_code already taken");
-		// 		$scope.subEnable = true;
-		// 		$scope.enabledEdit[currIndex] = true;
-		// 	}
-		// }
-		// console.log("submitRefCurrencies called");
-		// console.log("form submitted:" + angular.toJson($scope.refcurrencies));
 	}
 
 	$scope.checkSub = function () {
@@ -527,7 +483,7 @@ app.controller("RefCurrencies", ['$scope', '$rootScope', 'RefCurrenciesModel', f
 
 
 
-app.controller("StaffController", ['$scope', 'StaffsModel', function ($scope, StaffsModel) {
+app.controller("StaffController", ['$scope', '$rootScope', 'StaffsModel', function ($scope, $rootScope, StaffsModel) {
 
 	$scope.data = StaffsModel.getStaffs();
 
@@ -536,19 +492,35 @@ app.controller("StaffController", ['$scope', 'StaffsModel', function ($scope, St
 	$scope.enabledEdit = [];
 	$scope.subEnable = false;
 	var currIndex;
+	var newInstance = 1;
 
-	$scope.addStaff = function () {
+	$rootScope.$on("CallAddSt", function (event, msg) {
+		$scope.addStaff(msg);
+		$scope.subEnable = false;
+		$scope.enabledEdit[currIndex] = false;
+	});
+
+	$rootScope.$on("CheckStDuplicate", function (event, sID) {
+		$scope.checkDuplicate(sID);
+	});
+
+	// $rootScope.$on("CallDelRC", function (event, index) {
+	// 	delcode = 1;
+	// 	$scope.deleteRefCurrencies(index);
+	// });
+
+	$scope.addStaff = function (msg) {
 		$scope.subEnable = true;
 		var emp = {
-			staff_id: "",
+			staff_id: msg,
 			staff_name: "",
 			gender_MF: "",
 			date_of_birth: "",
 			daily_cost: "",
 			daily_rate: "",
 			date_joined: "",
-			date_left: "dummy",
-			other_staff_details: "dummy",
+			date_left: "",
+			other_staff_details: "",
 			disableEdit: false
 		};
 		$scope.staffs.push(emp);
@@ -560,18 +532,273 @@ app.controller("StaffController", ['$scope', 'StaffsModel', function ($scope, St
 		$scope.subEnable = true;
 		$scope.enabledEdit[index] = true;
 		currIndex = index;
+		newInstance = 0;
 	}
 	$scope.deleteStaff = function (index) {
 		$scope.staffs.splice(index, 1);
 		currIndex = index - 1;
 		$scope.subEnable = false;
+		$rootScope.$emit("CallDelStOP", index);
 	}
 
 	$scope.submitStaff = function () {
 		$scope.subEnable = false;
 		$scope.enabledEdit[currIndex] = false;
+		if (newInstance == 1)
+			$rootScope.$emit("CallAddStOP", $scope.staffs[currIndex].staff_id, 2);
 		console.log("submitStaff called");
 		console.log("form submitted:" + angular.toJson($scope.staffs));
+		newInstance = 1;
+	}
+
+	$scope.checkSub = function () {
+		return ($scope.subEnable);
+	}
+
+	$scope.checkDuplicate = function (sID) {
+		let obj = $scope.staffs.find(o => o.staff_id === sID);
+		if (obj !== undefined)
+			duplicate = true;
+		else
+			duplicate = false;
+	}
+}]);
+
+
+app.controller("RefRolesController", ['$scope', '$rootScope', 'RefRolesModel', function ($scope, $rootScope, RefRolesModel) {
+	$scope.data = RefRolesModel.getRefRoles();
+
+	$scope.refroles = angular.copy($scope.data);
+	$scope.enabledEdit = [];
+	$scope.subEnable = false;
+	var currIndex;
+	var newInstance = 1;
+
+	$rootScope.$on("CallAddRR", function (event, msg) {
+		$scope.addRefRoles(msg);
+		$scope.subEnable = false;
+		$scope.enabledEdit[currIndex] = false;
+	});
+
+	$rootScope.$on("CheckRRDuplicate", function (event, rCode) {
+		$scope.checkDuplicate(rCode);
+	});
+
+	$rootScope.$on("CallDelRR", function (event, index) {
+		$scope.deleteRefRoles(index);
+	});
+
+	$scope.addRefRoles = function (msg) {
+		$scope.subEnable = true;
+		var emp = {
+			role_code: msg,
+			role_name: "",
+			disableEdit: false
+		};
+		$scope.refroles.push(emp);
+		$scope.enabledEdit[$scope.refroles.length - 1] = true;
+		currIndex = $scope.refroles.length - 1;
+	}
+
+	$scope.editRefRoles = function (index) {
+		console.log("edit index" + index);
+		$scope.subEnable = true;
+		$scope.enabledEdit[index] = true;
+		currIndex = index;
+		newInstance = 0;
+	}
+	$scope.deleteRefRoles = function (index) {
+		$scope.refroles.splice(index, 1);
+		currIndex = index - 1;
+		$scope.subEnable = false;
+		$rootScope.$emit("CallDelStOP", index);
+	}
+
+	$scope.submitRefRoles = function () {
+
+		$scope.subEnable = false;
+		$scope.enabledEdit[currIndex] = false;
+		if (newInstance == 1)
+			$rootScope.$emit("CallAddStOP", $scope.refroles[currIndex].role_code, 3);
+		console.log("submitRefRoles called");
+		console.log("form submitted:" + angular.toJson($scope.refroles));
+		newInstance = 1;
+	}
+
+	$scope.checkSub = function () {
+		return ($scope.subEnable);
+	}
+
+	$scope.checkDuplicate = function (rCode) {
+		let obj = $scope.refroles.find(o => o.role_code === rCode);
+		if (obj !== undefined)
+			duplicate = true;
+		else
+			duplicate = false;
+	}
+
+}]);
+
+app.controller("StaffOnProjectController", ['$scope', '$rootScope', 'StaffsOnProjectModel', function ($scope, $rootScope, StaffsOnProjectModel) {
+	$scope.data = StaffsOnProjectModel.getStaffsOnProject();
+
+	$scope.staffsonproject = angular.copy($scope.data);
+	$scope.enabledEdit = [];
+	$scope.subEnable = false;
+	var currIndex;
+	var retcode; //To check in which entity new attribute will be created 
+
+	$rootScope.$on("CallAddStOP", function (event, msg, code) {
+		$scope.retcode = code;
+		$scope.addStaffOnProject(msg, code);
+		$scope.subEnable = false;
+		$scope.enabledEdit[currIndex] = false;
+	});
+
+	$rootScope.$on("CallDelStOP", function (event, index) {
+		$scope.deleteStaffOnProject(index);
+	});
+
+	$scope.addStaffOnProject = function (msg, code) {
+		$scope.subEnable = true;
+		if (code == 1) {
+			var emp = {
+				staff_on_project_period_id: "",
+				project_id: msg,
+				staff_id: "",
+				role_code: "",
+				from_datetime: "",
+				to_datetime: "",
+				hourly_rate: "",
+				disableEdit: false
+			};
+		} else if (code == 2) {
+			var emp = {
+				staff_on_project_period_id: "",
+				project_id: "",
+				staff_id: msg,
+				role_code: "",
+				from_datetime: "",
+				to_datetime: "",
+				hourly_rate: "",
+				disableEdit: false
+			};
+		} else {
+			var emp = {
+				staff_on_project_period_id: "",
+				project_id: "",
+				staff_id: "",
+				role_code: msg,
+				from_datetime: "",
+				to_datetime: "",
+				hourly_rate: "",
+				disableEdit: false
+			};
+		}
+		$scope.staffsonproject.push(emp);
+		$scope.enabledEdit[$scope.staffsonproject.length - 1] = true;
+		currIndex = $scope.staffsonproject.length - 1;
+	}
+	$scope.editStaffOnProject = function (index) {
+		console.log("edit index" + index);
+		$scope.subEnable = true;
+		$scope.enabledEdit[index] = true;
+		currIndex = index;
+	}
+	$scope.deleteStaffOnProject = function (index) {
+		$scope.staffsonproject.splice(index, 1);
+		currIndex = index - 1;
+		$scope.subEnable = false;
+	}
+
+	$scope.submitStaffOnProject = function () {
+		$scope.subEnable = false;
+		$scope.enabledEdit[currIndex] = false;
+		if ($scope.retcode == 1) {
+			$rootScope.$emit("CheckStDuplicate", $scope.staffsonproject[currIndex].staff_id);
+			if (!duplicate){
+				$rootScope.$emit("CheckRRDuplicate", $scope.staffsonproject[currIndex].role_code);
+				if (!duplicate){
+					$rootScope.$emit("CallAddSt", $scope.staffsonproject[currIndex].staff_id);
+					$rootScope.$emit("CallAddRR", $scope.staffsonproject[currIndex].role_code);
+				}
+				else {
+				alert("role_code already taken");
+				$scope.subEnable = true;
+				$scope.enabledEdit[currIndex] = true;
+				}
+			} else{
+				alert("staff_id already taken");
+				$scope.subEnable = true;
+				$scope.enabledEdit[currIndex] = true;
+			}
+		} else if ($scope.retcode == 2) {
+			$rootScope.$emit("CheckPDuplicate", $scope.staffsonproject[currIndex].project_id);
+			if (!duplicate){
+				$rootScope.$emit("CheckRRDuplicate", $scope.staffsonproject[currIndex].role_code);
+				if (!duplicate){
+					$rootScope.$emit("CallAddPro", $scope.staffsonproject[currIndex].project_id);
+					$rootScope.$emit("CallAddRR", $scope.staffsonproject[currIndex].role_code);
+				}
+				else {
+				alert("role_code already taken");
+				$scope.subEnable = true;
+				$scope.enabledEdit[currIndex] = true;
+				}
+			} else{
+				alert("project_id already taken");
+				$scope.subEnable = true;
+				$scope.enabledEdit[currIndex] = true;
+			}
+		} else if ($scope.retcode == 3) {
+			$rootScope.$emit("CheckPDuplicate", $scope.staffsonproject[currIndex].project_id);
+			if (!duplicate){
+				$rootScope.$emit("CheckStDuplicate", $scope.staffsonproject[currIndex].staff_id);
+				if (!duplicate){
+					$rootScope.$emit("CallAddPro", $scope.staffsonproject[currIndex].project_id);
+					$rootScope.$emit("CallAddSt", $scope.staffsonproject[currIndex].staff_id);
+				}
+				else {
+				alert("staff_id already taken");
+				$scope.subEnable = true;
+				$scope.enabledEdit[currIndex] = true;
+				}
+			} else{
+				alert("project_id already taken");
+				$scope.subEnable = true;
+				$scope.enabledEdit[currIndex] = true;
+			}
+		}
+		 else {
+			$rootScope.$emit("CheckPDuplicate", $scope.staffsonproject[currIndex].project_id);
+			if (!duplicate) {
+				$rootScope.$emit("CheckStDuplicate", $scope.staffsonproject[currIndex].staff_id);
+				if (!duplicate){
+					$rootScope.$emit("CheckRRDuplicate", $scope.staffsonproject[currIndex].role_code);
+					if (!duplicate){
+						$rootScope.$emit("CallAddPro", $scope.staffsonproject[currIndex].project_id);
+						$rootScope.$emit("CallAddSt", $scope.staffsonproject[currIndex].staff_id);
+						$rootScope.$emit("CallAddRR", $scope.staffsonproject[currIndex].role_code);
+					}
+					else{
+						alert("role_code already taken");
+						$scope.subEnable = true;
+						$scope.enabledEdit[currIndex] = true;
+					}
+				}	
+				else {
+					alert("staff_id already taken");
+					$scope.subEnable = true;
+					$scope.enabledEdit[currIndex] = true;
+				}
+			} else {
+				alert("project_id already taken");
+				$scope.subEnable = true;
+				$scope.enabledEdit[currIndex] = true;
+			}
+		}
+		console.log("submitStaffOnProject called");
+		console.log("form submitted:" + angular.toJson($scope.staffsonproject));
 	}
 
 	$scope.checkSub = function () {
