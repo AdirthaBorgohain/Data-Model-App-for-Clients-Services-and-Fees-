@@ -10,7 +10,7 @@ app.controller("ServiceOnProjectController", ['$scope', '$rootScope', 'ServicesO
 	var retcode; //To check in which entity new attribute will be created 
 
 	$rootScope.$on("CallAddSOP", function (event, msg, code) {
-		$scope.retcode = code;
+		retcode = code;
 		$scope.addServiceOnProject(msg, code);
 		$scope.subEnable = false;
 		$scope.enabledEdit[currIndex] = false;
@@ -54,7 +54,7 @@ app.controller("ServiceOnProjectController", ['$scope', '$rootScope', 'ServicesO
 	$scope.submitServiceOnProject = function () {
 		$scope.subEnable = false;
 		$scope.enabledEdit[currIndex] = false;
-		if ($scope.retcode == 1) {
+		if (retcode == 1) {
 			$rootScope.$emit("CheckPDuplicate", $scope.servicesonproject[currIndex].project_id);
 			if (!duplicate)
 				$rootScope.$emit("CallAddPro", $scope.servicesonproject[currIndex].project_id);
@@ -63,7 +63,7 @@ app.controller("ServiceOnProjectController", ['$scope', '$rootScope', 'ServicesO
 				$scope.subEnable = true;
 				$scope.enabledEdit[currIndex] = true;
 			}
-		} else if ($scope.retcode == 2) {
+		} else if (retcode == 2) {
 			$rootScope.$emit("CheckSDuplicate", $scope.servicesonproject[currIndex].serviceCode);
 			if (!duplicate)
 				$rootScope.$emit("CallAddSer", $scope.servicesonproject[currIndex].serviceCode);
@@ -75,10 +75,11 @@ app.controller("ServiceOnProjectController", ['$scope', '$rootScope', 'ServicesO
 		} else {
 			$rootScope.$emit("CheckSDuplicate", $scope.servicesonproject[currIndex].serviceCode);
 			if (!duplicate) {
-				$rootScope.$emit("CallAddSer", $scope.servicesonproject[currIndex].serviceCode);
 				$rootScope.$emit("CheckPDuplicate", $scope.servicesonproject[currIndex].project_id);
-				if (!duplicate)
+				if (!duplicate){
+					$rootScope.$emit("CallAddSer", $scope.servicesonproject[currIndex].serviceCode);
 					$rootScope.$emit("CallAddPro", $scope.servicesonproject[currIndex].project_id);
+				}
 				else {
 					alert("project_id already taken");
 					$scope.subEnable = true;

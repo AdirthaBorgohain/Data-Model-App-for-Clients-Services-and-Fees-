@@ -10,7 +10,7 @@ app.controller("ClientAddressController", ['$scope', '$rootScope', 'ClientAddres
 	var retcode; //To check in which entity new attribute will be created 
 
 	$rootScope.$on("CallAddCA", function (event, msg, code) {
-		$scope.retcode = code;
+		retcode = code;
 		$scope.addClientAddress(msg, code);
 		$scope.subEnable = false;
 		$scope.enabledEdit[currIndex] = false;
@@ -58,7 +58,7 @@ app.controller("ClientAddressController", ['$scope', '$rootScope', 'ClientAddres
 	$scope.submitClientAddress = function () {
 		$scope.subEnable = false;
 		$scope.enabledEdit[currIndex] = false;
-		if ($scope.retcode == 1) {
+		if (retcode == 1) {
 			$rootScope.$emit("CheckCDuplicate", $scope.clientaddresses[currIndex].client_id);
 			if (!duplicate) {
 				$rootScope.$emit("CallAddCli", $scope.clientaddresses[currIndex].client_id, 1);
@@ -68,7 +68,7 @@ app.controller("ClientAddressController", ['$scope', '$rootScope', 'ClientAddres
 				$scope.subEnable = true;
 				$scope.enabledEdit[currIndex] = true;
 			}
-		} else if ($scope.retcode == 2) {
+		} else if (retcode == 2) {
 			$rootScope.$emit("CheckAddrDuplicate", $scope.clientaddresses[currIndex].address_id);
 			if (!duplicate) {
 				$rootScope.$emit("CallAddAddr", $scope.clientaddresses[currIndex].address_id);
@@ -78,19 +78,19 @@ app.controller("ClientAddressController", ['$scope', '$rootScope', 'ClientAddres
 				$scope.enabledEdit[currIndex] = true;
 			}
 		} else {
-			// $rootScope.$emit("CheckSDuplicate", $scope.clientaddresses[currIndex].serviceCode);
-			if (!duplicate) {
-				// $rootScope.$emit("CallAddSer", $scope.clientaddresses[currIndex].serviceCode);
-				// $rootScope.$emit("CheckPDuplicate", $scope.clientaddresses[currIndex].project_id);
+			$rootScope.$emit("CheckAddrDuplicate", $scope.clientaddresses[currIndex].address_id);
+			if (!duplicate) {	
+				$rootScope.$emit("CheckCDuplicate", $scope.clientaddresses[currIndex].client_id);
 				if (!duplicate) {
-					// $rootScope.$emit("CallAddPro", $scope.clientaddresses[currIndex].project_id);
+					$rootScope.$emit("CallAddAddr", $scope.clientaddresses[currIndex].address_id);
+					$rootScope.$emit("CallAddCli", $scope.clientaddresses[currIndex].client_id, 1);
 				} else {
-					alert("project_id already taken");
+					alert("address_id already taken");
 					$scope.subEnable = true;
 					$scope.enabledEdit[currIndex] = true;
 				}
 			} else {
-				alert("service_code already taken");
+				alert("client_id already taken");
 				$scope.subEnable = true;
 				$scope.enabledEdit[currIndex] = true;
 			}

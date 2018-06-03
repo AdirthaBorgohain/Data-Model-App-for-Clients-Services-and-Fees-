@@ -10,7 +10,7 @@ app.controller("StaffOnProjectController", ['$scope', '$rootScope', 'StaffsOnPro
 	var retcode; //To check in which entity new attribute will be created 
 
 	$rootScope.$on("CallAddStOP", function (event, msg, code) {
-		$scope.retcode = code;
+		retcode = code;
 		$scope.addStaffOnProject(msg, code);
 		$scope.subEnable = false;
 		$scope.enabledEdit[currIndex] = false;
@@ -75,7 +75,7 @@ app.controller("StaffOnProjectController", ['$scope', '$rootScope', 'StaffsOnPro
 	$scope.submitStaffOnProject = function () {
 		$scope.subEnable = false;
 		$scope.enabledEdit[currIndex] = false;
-		if ($scope.retcode == 1) {
+		if (retcode == 1) {
 			$rootScope.$emit("CheckStDuplicate", $scope.staffsonproject[currIndex].staff_id);
 			if (!duplicate) {
 				$rootScope.$emit("CheckRRDuplicate", $scope.staffsonproject[currIndex].role_code);
@@ -92,7 +92,7 @@ app.controller("StaffOnProjectController", ['$scope', '$rootScope', 'StaffsOnPro
 				$scope.subEnable = true;
 				$scope.enabledEdit[currIndex] = true;
 			}
-		} else if ($scope.retcode == 2) {
+		} else if (retcode == 2) {
 			$rootScope.$emit("CheckPDuplicate", $scope.staffsonproject[currIndex].project_id);
 			if (!duplicate) {
 				$rootScope.$emit("CheckRRDuplicate", $scope.staffsonproject[currIndex].role_code);
@@ -109,7 +109,7 @@ app.controller("StaffOnProjectController", ['$scope', '$rootScope', 'StaffsOnPro
 				$scope.subEnable = true;
 				$scope.enabledEdit[currIndex] = true;
 			}
-		} else if ($scope.retcode == 3) {
+		} else if (retcode == 3) {
 			$rootScope.$emit("CheckPDuplicate", $scope.staffsonproject[currIndex].project_id);
 			if (!duplicate) {
 				$rootScope.$emit("CheckStDuplicate", $scope.staffsonproject[currIndex].staff_id);
